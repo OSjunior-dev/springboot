@@ -15,6 +15,10 @@ import javax.persistence.OneToMany;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+@JsonAutoDetect
 @Entity
 public class Usuario implements UserDetails {
 
@@ -24,21 +28,21 @@ public class Usuario implements UserDetails {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
-	private String login;
-	private String senha;
-	
+	@JsonProperty(value = "username")
+	private String username;
+
+	@JsonProperty(value = "password")
+	private String password;
+
 	@OneToMany(fetch = FetchType.EAGER)
-	@JoinTable(name = "usuarios_role", 
-	     joinColumns = @JoinColumn(name = "usuario_id", 
-	                   referencedColumnName = "id",
-	                   table = "usuario"),  // cria tabela de acesso do usuário
+	@JoinTable(name = "usuarios_role",
+			joinColumns = @JoinColumn(name = "usuario_id", 
+			referencedColumnName = "id", table = "usuario"),
 			
-			inverseJoinColumns = @JoinColumn(name="role_id",
-								referencedColumnName = "id",
-								table = "role"))
-	
+			inverseJoinColumns = @JoinColumn(name = "role_id", 
+			referencedColumnName = "id", table = "role"))
+
 	private List<Role> roles;
-	
 
 	public Long getId() {
 		return id;
@@ -48,20 +52,12 @@ public class Usuario implements UserDetails {
 		this.id = id;
 	}
 
-	public String getLogin() {
-		return login;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
-	public void setLogin(String login) {
-		this.login = login;
-	}
-
-	public String getSenha() {
-		return senha;
-	}
-
-	public void setSenha(String senha) {
-		this.senha = senha;
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 	@Override
@@ -71,12 +67,12 @@ public class Usuario implements UserDetails {
 
 	@Override
 	public String getPassword() {
-		return senha;
+		return password;
 	}
 
 	@Override
 	public String getUsername() {
-		return login;
+		return username;
 	}
 
 	@Override
